@@ -3,20 +3,19 @@
 {% block title %}Product index{% endblock %}
 
 {% block body %}
-    <h1>Product index</h1>
+    <h1>Lista de productos</h1>
 
-    <table class="table">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Code</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Brand</th>
-                <th>Price</th>
-                <th>CreatedAt</th>
-                <th>UpdatedAt</th>
-                <th>actions</th>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Marca</th>
+                <th>Precio</th>
+                <th>Creado</th>
+                <th>Actualizado</th>
+                <th>Acción</th>
             </tr>
         </thead>
         <tbody>
@@ -25,23 +24,47 @@
                 <td>{{ product.id }}</td>
                 <td>{{ product.code }}</td>
                 <td>{{ product.name }}</td>
-                <td>{{ product.description }}</td>
                 <td>{{ product.brand }}</td>
                 <td>{{ product.price }}</td>
                 <td>{{ product.createdAt ? product.createdAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ product.updatedAt ? product.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
-                    <a href="{{ path('app_product_show', {'id': product.id}) }}">show</a>
-                    <a href="{{ path('app_product_edit', {'id': product.id}) }}">edit</a>
+                    <a href="{{ path('app_product_show', {'id': product.id}) }}" class="btn btn-warning">Ver</a>
+                    <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-info">Editar</a>
+                    <a href="{{ path('app_product_delete', {'id': product.id}) }}" class="btn btn-danger">Eliminar</a>
                 </td>
             </tr>
+
+
+            {% if maxPages > 1 %}
+                <ul>
+                    {%if thisPage > 1 %}
+                        <li >
+                            <a href="{{ path('app_product_index', {currentPage: thisPage-1 < 1 ? 1 : thisPage-1}) }}">«</a>
+                        </li>
+                    {% endif %}
+
+                    {# Render each page number #}
+                    {% for i in 1..maxPages %}
+                        <li>
+                            <a href="{{ path('app_product_index', {currentPage: i}) }}">{{ i }}</a>
+                        </li>
+                    {% endfor %}
+
+                    {# `»` arrow #}
+                    {%if thisPage < maxPages %}
+                        <li>
+                            <a href="{{ path('app_product_index', {currentPage: thisPage+1 <= maxPages ? thisPage+1 : thisPage}) }}">»</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+            
         {% else %}
             <tr>
-                <td colspan="9">no records found</td>
+                <td colspan="8">No se encontraron registros</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_product_new') }}">Create new</a>
 {% endblock %}

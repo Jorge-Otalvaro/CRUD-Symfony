@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Product;
 use App\Entity\Category;
+use App\Entity\Product;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,9 +21,23 @@ class ProductController extends AbstractController
      */
     public function index(ProductRepository $productRepository): Response
     {
-        return $this->render('product/index.html.twig', [
+        $currentPage = 1;
+        $limit = 5;
+        $products = $productRepository->getAllProds($currentPage, $limit);
+        $productsResultado = $products['paginator'];
+        $productsQueryCompleta =  $products['query'];
+        $maxPages = ceil($products['paginator']->count() / $limit);
+
+        /*return $this->render('product/index.html.twig', [
             'products' => $productRepository->findAll(),
-        ]);
+        ]);*/
+
+        return $this->render('product/index.html.twig', array(
+            'products' => $productsResultado,
+            'maxPages'=>$maxPages,
+            'thisPage' => $currentPage,
+            'all_items' => $productsQueryCompleta
+        ) );
     }
 
     /**
@@ -52,7 +66,7 @@ class ProductController extends AbstractController
     public function show(Product $product): Response
     {
         return $this->render('product/show.html.twig', [
-            'product' => $product,
+            'product' => $product
         ]);
     }
 

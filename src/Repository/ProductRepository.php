@@ -8,6 +8,9 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
+use Doctrine\ORM\Tools\Pagination\Paginator;
+
+
 /**
  * @method Product|null find($id, $lockMode = null, $lockVersion = null)
  * @method Product|null findOneBy(array $criteria, array $orderBy = null)
@@ -73,4 +76,26 @@ class ProductRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function getAllProds($currentPage = 1, $limit = 3)
+    {
+        // Create our query
+        $query = $this->createQueryBuilder('p')
+            ->getQuery();
+
+        $paginator = $this->paginate($query, $currentPage, $limit);
+
+        return array('paginator' => $paginator, 'query' => $query);
+    }
+
+    public function paginate($dql, $page = 1, $limit = 3)
+    {
+        $paginator = new Paginator($dql);
+
+        $paginator->getQuery()
+            ->setFirstResult($limit * ($page - 1)) // Offset
+            ->setMaxResults($limit); // Limit
+
+        return $paginator;
+    }
 }

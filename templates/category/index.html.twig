@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Category index{% endblock %}
+
+{% block body %}
+    <h1>Lista de categorías</h1>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Estado</th>
+                <th>Creado</th>
+                <th>Actualizado</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for category in categories %}
+            <tr>
+                <td>{{ category.id }}</td>
+                <td>{{ category.name }}</td>
+                <td>
+                {{ category.active ? '<a href="" class="btn btn-success">Activo</a>' : '<a href="" class="btn btn-danger">Inactivo</a>' }}
+                </td>
+                <td>{{ category.createdAt ? category.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ category.updatedAt ? category.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_category_show', {'id': category.id}) }}" class="btn btn-warning">Ver</a>
+                    <a href="{{ path('app_category_edit', {'id': category.id}) }}" class="btn btn-info">Editar</a>
+                    <a href="{{ path('app_category_delete', {'id': category.id}) }}" class="btn btn-danger">Eliminar</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">No se encontraron registros</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
