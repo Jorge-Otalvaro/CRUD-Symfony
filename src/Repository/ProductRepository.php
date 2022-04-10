@@ -10,7 +10,6 @@ use Doctrine\Persistence\ManagerRegistry;
 
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
-
 /**
  * @method Product|null find($id, $lockMode = null, $lockVersion = null)
  * @method Product|null findOneBy(array $criteria, array $orderBy = null)
@@ -48,54 +47,13 @@ class ProductRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return Product[] Returns an array of Product objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * Buscar todos las Categorias
+     */
+    public function buscarTodosLosProductos()
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Product
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
-
-    public function getAllProds($currentPage = 1, $limit = 3)
-    {
-        // Create our query
-        $query = $this->createQueryBuilder('p')
-            ->getQuery();
-
-        $paginator = $this->paginate($query, $currentPage, $limit);
-
-        return array('paginator' => $paginator, 'query' => $query);
-    }
-
-    public function paginate($dql, $page = 1, $limit = 3)
-    {
-        $paginator = new Paginator($dql);
-
-        $paginator->getQuery()
-            ->setFirstResult($limit * ($page - 1)) // Offset
-            ->setMaxResults($limit); // Limit
-
-        return $paginator;
+        return $this->getEntityManager()->createQuery(
+            'SELECT prod.id, prod.code, prod.name, prod.description, prod.brand, prod.price, prod.createdAt, prod.updatedAt FROM  App:Product prod'
+        );
     }
 }

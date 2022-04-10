@@ -8,19 +8,31 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Marca</th>
-                <th>Precio</th>
-                <th>Creado</th>
-                <th>Actualizado</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Id', 'a.id') }}</th>
+                <th {% if pagination.isSorted('a.code') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'Código', 'a.code') }}
+                </th>
+                <th {% if pagination.isSorted('a.name') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'Nombre', 'a.name') }}
+                </th>
+                <th {% if pagination.isSorted('a.brand') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'Marca', 'a.brand') }}
+                </th>
+                <th {% if pagination.isSorted('a.price') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'Precio', 'a.price') }}
+                </th>
+                <th {% if pagination.isSorted('a.createdAt') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'F.Creado', 'a.createdAt') }}
+                </th>
+                <th {% if pagination.isSorted('a.updatedAt') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'F.Actualizado', 'a.updatedAt') }}
+                </th>
                 <th>Acción</th>
             </tr>
         </thead>
         <tbody>
-        {% for product in products %}
-            <tr>
+        {% for product in pagination %}
+            <tr {% if loop.index is odd %}class="color"{% endif %}>
                 <td>{{ product.id }}</td>
                 <td>{{ product.code }}</td>
                 <td>{{ product.name }}</td>
@@ -33,33 +45,7 @@
                     <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-info">Editar</a>
                     <a href="{{ path('app_product_delete', {'id': product.id}) }}" class="btn btn-danger">Eliminar</a>
                 </td>
-            </tr>
-
-
-            {% if maxPages > 1 %}
-                <ul>
-                    {%if thisPage > 1 %}
-                        <li >
-                            <a href="{{ path('app_product_index', {currentPage: thisPage-1 < 1 ? 1 : thisPage-1}) }}">«</a>
-                        </li>
-                    {% endif %}
-
-                    {# Render each page number #}
-                    {% for i in 1..maxPages %}
-                        <li>
-                            <a href="{{ path('app_product_index', {currentPage: i}) }}">{{ i }}</a>
-                        </li>
-                    {% endfor %}
-
-                    {# `»` arrow #}
-                    {%if thisPage < maxPages %}
-                        <li>
-                            <a href="{{ path('app_product_index', {currentPage: thisPage+1 <= maxPages ? thisPage+1 : thisPage}) }}">»</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            {% endif %}
-            
+            </tr>            
         {% else %}
             <tr>
                 <td colspan="8">No se encontraron registros</td>
@@ -67,4 +53,9 @@
         {% endfor %}
         </tbody>
     </table>
+
+    {# display navigation #}
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
 {% endblock %}

@@ -8,17 +8,25 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>Estado</th>
-                <th>Creado</th>
-                <th>Actualizado</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Id', 'a.id') }}</th>
+                <th {% if pagination.isSorted('a.name') %} class="sorted"{% endif %}>
+                    {{ knp_pagination_sortable(pagination, 'Nombre', 'a.name') }}
+                </th>
+                <th {% if pagination.isSorted('a.active') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'Estado', 'a.active') }}
+                </th>
+                <th {% if pagination.isSorted('a.createdAt') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'Creado', 'a.createdAt') }}
+                </th>
+                <th {% if pagination.isSorted('a.updatedAt') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'Actualizado', 'a.updatedAt') }}
+                </th>
                 <th>Acción</th>
             </tr>
         </thead>
         <tbody>
-        {% for category in categories %}
-            <tr>
+        {% for category in pagination %}
+            <tr {% if loop.index is odd %}class="color"{% endif %}>
                 <td>{{ category.id }}</td>
                 <td>{{ category.name }}</td>
                 <td>
@@ -39,5 +47,11 @@
         {% endfor %}
         </tbody>
     </table>
+
+    {# display navigation #}
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+
 {% endblock %}
 

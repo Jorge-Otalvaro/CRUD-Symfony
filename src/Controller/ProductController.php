@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @Route("/")
@@ -19,25 +20,23 @@ class ProductController extends AbstractController
     /**
      * @Route("/", name="app_product_index", methods={"GET"})
      */
-    public function index(ProductRepository $productRepository): Response
+    public function index(PaginatorInterface $paginator, Request $request, ProductRepository $productRepository): Response
     {
-        $currentPage = 1;
-        $limit = 5;
-        $products = $productRepository->getAllProds($currentPage, $limit);
-        $productsResultado = $products['paginator'];
-        $productsQueryCompleta =  $products['query'];
-        $maxPages = ceil($products['paginator']->count() / $limit);
+        $em = $this->getDoctrine()->getManager();
+        $products = $em->getRepository(Product::class)->buscarTodosLosProductos(); 
 
-        /*return $this->render('product/index.html.twig', [
+        $pagination = $paginator->paginate(
+            $products,
+            $request->query->getInt('page', 1),
+            5
+        );
+
+        return $this->render('product/index.html.twig', ['pagination' => $pagination]);
+
+        /*
+        return $this->render('/index.html.twig', [
             'products' => $productRepository->findAll(),
         ]);*/
-
-        return $this->render('product/index.html.twig', array(
-            'products' => $productsResultado,
-            'maxPages'=>$maxPages,
-            'thisPage' => $currentPage,
-            'all_items' => $productsQueryCompleta
-        ) );
     }
 
     /**
@@ -90,7 +89,7 @@ class ProductController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $product->setUpdatedAt(new \DateTime());
             $productRepository->add($product);
-            
+
             $this->addFlash(
                 'success',
                 'Proceso exitoso'

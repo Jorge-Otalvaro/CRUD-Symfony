@@ -8,6 +8,10 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -151,6 +155,10 @@ class Category
             'fields' => ['name'],
             'errorPath' => 'name',
             'message' => 'El nombre de la categoría ya esta en uso',
+        ]));
+
+        $metadata->addPropertyConstraint('name', new NotBlank([
+            'message' => 'El campo es obligatorio / no puede estar en null',
         ]));
     }
 }

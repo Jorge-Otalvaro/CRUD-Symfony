@@ -6,6 +6,10 @@ use App\Repository\ProductRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -190,7 +194,38 @@ class Product
             'message' => 'El código del producto ya esta en uso',
         ]));
 
-        /*$metadata->addPropertyConstraint('firstName', new Assert\Length(array(
+        $metadata->addPropertyConstraint('name', new NotBlank([
+            'message' => 'El campo es obligatorio / no puede estar en null',
+        ]));
+
+        $metadata->addPropertyConstraint('code', new NotBlank([
+            'message' => 'El campo es obligatorio / no puede estar en null',
+        ]));
+
+        $metadata->addPropertyConstraint('description', new NotBlank([
+            'message' => 'El campo es obligatorio / no puede estar en null',
+        ]));
+
+        $metadata->addPropertyConstraint('brand', new NotBlank([
+            'message' => 'El campo es obligatorio / no puede estar en null',
+        ]));
+
+        $metadata->addPropertyConstraint('price', new NotBlank([
+            'message' => 'El campo es obligatorio / no puede estar en null',
+        ]));
+    
+        //El precio debe ser un número válido.
+
+        /*$metadata->addPropertyConstraint('price', new Assert\Length(array(
+            'min'        => 2,
+            'max'        => 50,
+            'minMessage' => 'Your first name must be at least {{ limit }} characters length',
+            'maxMessage' => 'Your first name cannot be longer than than {{ limit }} characters length',
+        )));*/
+
+        //El código no puede contener caracteres especiales ni espacios.
+
+        /*$metadata->addPropertyConstraint('code', new Assert\Length(array(
             'min'        => 2,
             'max'        => 50,
             'minMessage' => 'Your first name must be at least {{ limit }} characters length',

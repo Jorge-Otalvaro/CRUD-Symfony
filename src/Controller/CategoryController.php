@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @Route("/category")
@@ -18,11 +19,22 @@ class CategoryController extends AbstractController
     /**
      * @Route("/", name="app_category_index", methods={"GET"})
      */
-    public function index(CategoryRepository $categoryRepository): Response
+    public function index(PaginatorInterface $paginator, Request $request, CategoryRepository $categoryRepository): Response
     {
-        return $this->render('category/index.html.twig', [
+        $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository(Category::class)->buscarTodasLasCategorias(); 
+
+        $pagination = $paginator->paginate(
+            $categories,
+            $request->query->getInt('page', 1),
+            5
+        );
+
+        return $this->render('category/index.html.twig', ['pagination' => $pagination]);
+
+        /*return $this->render('category/index.html.twig', [
             'categories' => $categoryRepository->findAll(),
-        ]);
+        ]);*/
     }
 
     /**
@@ -70,7 +82,9 @@ class CategoryController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $category->setUpdatedAt(new \DateTime());
+
             $categoryRepository->add($category);
 
             $this->addFlash(
