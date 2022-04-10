@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @Route("/")
@@ -115,6 +116,27 @@ class ProductController extends AbstractController
         }
 
         return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * @Route("/{id}/pdf", name="sandbox_pdf", methods={"GET"})
+     */
+    public function pdfAction(\Knp\Snappy\Pdf $snappy, Product $product): Response
+    {
+        $html = $this->renderView('pdf/index.html.twig', [
+            'product' => $product,
+        ]);
+
+        $filename = 'product';
+
+        return new Response(
+            $snappy->getOutputFromHtml($html),
+            200,
+            array(
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="'.$filename.'.pdf"'
+            )
+        );
     }
 
     /**
