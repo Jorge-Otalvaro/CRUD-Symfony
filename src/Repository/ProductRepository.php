@@ -9,6 +9,7 @@ use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 
 /**
  * @method Product|null find($id, $lockMode = null, $lockVersion = null)
@@ -55,5 +56,16 @@ class ProductRepository extends ServiceEntityRepository
         return $this->getEntityManager()->createQuery(
             'SELECT prod.id, prod.code, prod.name, prod.description, prod.brand, prod.price, prod.createdAt, prod.updatedAt FROM  App:Product prod'
         );
+    }
+
+    public function findFilter($filter)
+    {
+        return $this->createQueryBuilder("a")->andWhere('a.id like :id' OR 'a.code like :code' OR 'a.name like :name' OR 'a.brand like :brand')
+        ->setParameters([
+            'id' => '%' . $filter . '%',
+            'code' => '%' . $filter . '%',
+            'name' => '%' . $filter . '%',
+            'brand' => '%' . $filter . '%'
+        ])->getQuery();
     }
 }

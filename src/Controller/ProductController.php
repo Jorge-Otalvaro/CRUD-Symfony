@@ -43,17 +43,18 @@ class ProductController extends AbstractController
      * @Route("/new", name="app_product_new", methods={"GET", "POST"})
      */
     public function new(Request $request, ProductRepository $productRepository): Response
-    {
-        $product = new Product();
+    {        
+        $product = new Product();        
         $product->setCreatedAt(new \DateTime());
-        $product->setUpdatedAt(new \DateTime());
-
+        $product->setUpdatedAt(new \DateTime());     
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $productRepository->add($product);
-            
+            $category = $product->getCategory();
+            $product->setCategory($category);
+            $productRepository->add($product);  
+                      
             $this->addFlash(
                 'success',
                 'Proceso exitoso'
@@ -114,5 +115,28 @@ class ProductController extends AbstractController
         }
 
         return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * @Route("/buscar", name="app_product_search",  methods={"GET"})
+     */
+    public function search(PaginatorInterface $paginator, Request $request, ProductRepository $productRepository): Response
+    {
+        $em = $this->getDoctrine()->getManager();
+        $products = $em->getRepository(Product::class)->findFilter($request); 
+
+        /* 
+
+        Terminar validacion para que sea dinamica y se actualice en tiempo real no estar precionando el boton buscar 
+
+        $pagination = $paginator->paginate(
+            $products,
+            $request->query->getInt('page', 1),
+            5
+        );
+
+        */
+
+        return $this->render('product/index.html.twig', ['pagination' => $pagination]);
     }
 }

@@ -187,11 +187,9 @@ class Product
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         $metadata->addConstraint(new UniqueEntity([
-            'fields' => ['name', 'code'],
+            'fields' => ['name'],
             'errorPath' => 'name',
             'message' => 'El nombre del producto ya esta en uso',
-            'errorPath' => 'code',
-            'message' => 'El código del producto ya esta en uso',
         ]));
 
         $metadata->addPropertyConstraint('name', new NotBlank([
@@ -212,6 +210,12 @@ class Product
 
         $metadata->addPropertyConstraint('price', new NotBlank([
             'message' => 'El campo es obligatorio / no puede estar en null',
+        ]));
+
+        $metadata->addConstraint(new UniqueEntity([
+            'fields' => ['code'],
+            'errorPath' => 'code',
+            'message' => 'El código del producto ya esta en uso',
         ]));
     
         //El precio debe ser un número válido.

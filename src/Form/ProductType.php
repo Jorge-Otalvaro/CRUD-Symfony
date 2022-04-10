@@ -39,11 +39,12 @@ class ProductType extends AbstractType
                 'label' => 'Valor'
             ])
             ->add('category', EntityType::class, [
-                'class' => 'App\Entity\Category',
+                'class' => Category::class,
                 'placeholder' => 'Seleccione una categoría',
                 'label' => 'Categoría',
                 'required' => true,
-                'mapped' => false
+                'multiple' => false,
+                'attr' => array('class' => 'form-control')
             ])
         ;
     }
