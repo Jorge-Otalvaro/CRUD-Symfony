@@ -1,7 +1,7 @@
 
 # Productos.com
 
-![Logo](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/th5xamgrr6se0x5ro4g6.png)
+![Logo](![image](https://user-images.githubusercontent.com/16736512/162637780-3163c799-1fb9-423f-9be3-22140616cfb9.png))
 
 
 ## Características Funcionales Realizadas
@@ -13,6 +13,7 @@ This project is used by the following companies:
 - Lista de Categorias
 - CRUD de Categorias
 - Detalle de producto, Categoria
+- Paginado
 
 
 
