@@ -48,24 +48,48 @@ class ProductRepository extends ServiceEntityRepository
         }
     }
 
+    public function findAll()
+    {
+        return $this->findBy(array(), array('id' => 'ASC'));
+    }
+
     /**
      * Buscar todos las Categorias
      */
     public function buscarTodosLosProductos()
     {
-        return $this->getEntityManager()->createQuery(
-            'SELECT prod.id, prod.code, prod.name, prod.description, prod.brand, prod.price, prod.createdAt, prod.updatedAt FROM  App:Product prod'
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT prod.id, prod.code, prod.name, prod.description, prod.brand, prod.price, prod.createdAt, prod.updatedAt
+            FROM App:Product prod
+            ORDER BY prod.id ASC'
         );
+
+        return $query;
     }
 
-    public function findFilter($filter)
+    /**
+     * @return Product[]
+     */
+    public function findAllGreaterThanPrice($filter): array
     {
-        return $this->createQueryBuilder("a")->andWhere('a.id like :id' OR 'a.code like :code' OR 'a.name like :name' OR 'a.brand like :brand')
-        ->setParameters([
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT prod
+            FROM App:Product prod
+            WHERE 
+            prod.id like :id OR prod.name like :name OR
+            prod.code like :code OR prod.brand like :brand
+            ORDER BY prod.name ASC'
+        )->setParameter([
             'id' => '%' . $filter . '%',
             'code' => '%' . $filter . '%',
             'name' => '%' . $filter . '%',
             'brand' => '%' . $filter . '%'
-        ])->getQuery();
+        ]);
+        
+        return $query->getResult();
     }
 }
