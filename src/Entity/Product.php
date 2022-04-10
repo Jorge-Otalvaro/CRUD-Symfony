@@ -217,23 +217,15 @@ class Product
             'errorPath' => 'code',
             'message' => 'El código del producto ya esta en uso',
         ]));
-    
-        //El precio debe ser un número válido.
 
-        /*$metadata->addPropertyConstraint('price', new Assert\Length(array(
-            'min'        => 2,
-            'max'        => 50,
-            'minMessage' => 'Your first name must be at least {{ limit }} characters length',
-            'maxMessage' => 'Your first name cannot be longer than than {{ limit }} characters length',
-        )));*/
+        $metadata->addPropertyConstraint('price', new Assert\Positive([
+            'message' => 'El precio debe ser un número válido.',
+        ]));
 
-        //El código no puede contener caracteres especiales ni espacios.
-
-        /*$metadata->addPropertyConstraint('code', new Assert\Length(array(
-            'min'        => 2,
-            'max'        => 50,
-            'minMessage' => 'Your first name must be at least {{ limit }} characters length',
-            'maxMessage' => 'Your first name cannot be longer than than {{ limit }} characters length',
-        )));*/
+        $metadata->addPropertyConstraint('code', new Assert\Regex([
+            'pattern' => '/[^A-Za-z0-9\-]/',
+            'match' => false,
+            'message' => 'El código no puede contener caracteres especiales ni espacios',
+        ]));
     }
 }
