@@ -119,6 +119,8 @@ class ProductController extends AbstractController
     }
 
     /**
+     * Export to PDF
+     * 
      * @Route("/{id}/pdf", name="sandbox_pdf", methods={"GET"})
      */
     public function pdfAction(\Knp\Snappy\Pdf $snappy, Product $product): Response
@@ -126,15 +128,15 @@ class ProductController extends AbstractController
         $html = $this->renderView('pdf/index.html.twig', [
             'product' => $product,
         ]);
-
-        $filename = 'product';
+        
+        $filename = sprintf('product-%s.pdf', date('Y-m-d'));
 
         return new Response(
             $snappy->getOutputFromHtml($html),
             200,
             array(
                 'Content-Type'          => 'application/pdf',
-                'Content-Disposition'   => 'inline; filename="'.$filename.'.pdf"'
+                'Content-Disposition'   => sprintf('attachment; filename="%s"', $filename),
             )
         );
     }
