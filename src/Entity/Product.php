@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,16 +22,34 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(
+     *      min = "4",
+     *      max = "10",
+     *      minMessage = "El codigo por lo menos debe tener {{ limit }} caracteres de largo",
+     *      maxMessage = "El codigo no puede tener más de {{ limit }} caracteres de largo"
+     * )
      */
     private $code;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(
+     *      min = "4",
+     *      max = "120",
+     *      minMessage = "El nombre por lo menos debe tener {{ limit }} caracteres de largo",
+     *      maxMessage = "El nombre no puede tener más de {{ limit }} caracteres de largo"
+     * )
      */
     private $name;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Assert\Length(
+     *      min = "4",
+     *      max = "120",
+     *      minMessage = "La descripcion por lo menos debe tener {{ limit }} caracteres de largo",
+     *      maxMessage = "La descripcion no puede tener más de {{ limit }} caracteres de largo"
+     * )
      */
     private $description;
 
@@ -157,5 +178,23 @@ class Product
         $this->category = $category;
 
         return $this;
+    }
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addConstraint(new UniqueEntity([
+            'fields' => ['name', 'code'],
+            'errorPath' => 'name',
+            'message' => 'El nombre del producto ya esta en uso',
+            'errorPath' => 'code',
+            'message' => 'El código del producto ya esta en uso',
+        ]));
+
+        /*$metadata->addPropertyConstraint('firstName', new Assert\Length(array(
+            'min'        => 2,
+            'max'        => 50,
+            'minMessage' => 'Your first name must be at least {{ limit }} characters length',
+            'maxMessage' => 'Your first name cannot be longer than than {{ limit }} characters length',
+        )));*/
     }
 }

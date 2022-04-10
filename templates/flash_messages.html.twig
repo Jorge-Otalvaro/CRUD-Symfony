@@ -1,38 +1,10 @@
 {% block flash_messages %}
+  	{% for type, messages in app.session.flashbag.all() %}
+    	{% for message in messages %}
 
-	{# read and display just one flash message type #}
-
-	{% for message in app.flashes('notice') %}
-	    <div class="flash-notice">
-	        {{ message }}
-	    </div>
-	{% endfor %}
-
-	{# read and display several types of flash messages #}
-
-	{% for label, messages in app.flashes(['success', 'warning']) %}
-	    {% for message in messages %}
-	        <div class="flash-{{ label }}">
-	            {{ message }}
-	        </div>
-	    {% endfor %}
-	{% endfor %}
-
-	{# read and display all flash messages #}
-	{% for label, messages in app.flashes %}
-	    {% for message in messages %}
-	        <div class="flash-{{ label }}">
-	            {{ message }}
-	        </div>
-	    {% endfor %}
-	{% endfor %}
-
-  {% for type, messages in app.session.flashbag.all() %}
-    {% for message in messages %}
-      <div class="alert alert-{{ type }} alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        {{ message | raw }}
-      </div>
-    {% endfor %}
-  {% endfor %}
+    		<div class="alert alert-{{ type }}" alert-dismissible" role="alert">
+			  	{{ message | raw }}
+			</div>
+    	{% endfor %}
+  	{% endfor %}
 {% endblock %}

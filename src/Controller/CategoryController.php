@@ -31,11 +31,17 @@ class CategoryController extends AbstractController
     public function new(Request $request, CategoryRepository $categoryRepository): Response
     {
         $category = new Category();
+        $category->setCreatedAt(new \DateTime());
+        $category->setUpdatedAt(new \DateTime());
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $categoryRepository->add($category);
+            $this->addFlash(
+                'success',
+                'Proceso exitoso'
+            );
             return $this->redirectToRoute('app_category_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -64,11 +70,12 @@ class CategoryController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $category->setUpdatedAt(new \DateTime());
             $categoryRepository->add($category);
 
             $this->addFlash(
-                'notice',
-                'Your changes were saved!'
+                'success',
+                'Proceso exitoso'
             );
             
             return $this->redirectToRoute('app_category_index', [], Response::HTTP_SEE_OTHER);
@@ -88,6 +95,11 @@ class CategoryController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->request->get('_token'))) {
             $categoryRepository->remove($category);
         }
+
+        $this->addFlash(
+            'success',
+            'Proceso exitoso'
+        );
 
         return $this->redirectToRoute('app_category_index', [], Response::HTTP_SEE_OTHER);
     }

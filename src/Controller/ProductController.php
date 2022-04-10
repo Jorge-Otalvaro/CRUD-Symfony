@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/product")
+ * @Route("/")
  */
 class ProductController extends AbstractController
 {
@@ -46,11 +46,20 @@ class ProductController extends AbstractController
     public function new(Request $request, ProductRepository $productRepository): Response
     {
         $product = new Product();
+        $product->setCreatedAt(new \DateTime());
+        $product->setUpdatedAt(new \DateTime());
+
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $productRepository->add($product);
+            
+            $this->addFlash(
+                'success',
+                'Proceso exitoso'
+            );
+
             return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -79,7 +88,14 @@ class ProductController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $product->setUpdatedAt(new \DateTime());
             $productRepository->add($product);
+            
+            $this->addFlash(
+                'success',
+                'Proceso exitoso'
+            );
+
             return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
         }
 

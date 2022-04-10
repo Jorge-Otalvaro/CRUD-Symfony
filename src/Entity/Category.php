@@ -5,6 +5,9 @@ namespace App\Entity;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -21,6 +24,12 @@ class Category
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(
+     *      min = "4",
+     *      max = "60",
+     *      minMessage = "El nombre por lo menos debe tener {{ limit }} caracteres de largo",
+     *      maxMessage = "El nombre no puede tener más de {{ limit }} caracteres de largo"
+     * )
      */
     private $name;
 
@@ -47,6 +56,10 @@ class Category
     public function __construct()
     {
         $this->products = new ArrayCollection();
+    }
+
+    public function __toString() {
+        return $this->name;
     }
 
     public function getId(): ?int
@@ -130,5 +143,14 @@ class Category
         }
 
         return $this;
+    }
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addConstraint(new UniqueEntity([
+            'fields' => ['name'],
+            'errorPath' => 'name',
+            'message' => 'El nombre de la categoría ya esta en uso',
+        ]));
     }
 }
