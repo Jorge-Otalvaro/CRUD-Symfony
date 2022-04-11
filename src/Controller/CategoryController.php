@@ -22,19 +22,20 @@ class CategoryController extends AbstractController
     public function index(PaginatorInterface $paginator, Request $request, CategoryRepository $categoryRepository): Response
     {
         $em = $this->getDoctrine()->getManager();
-        $categories = $em->getRepository(Category::class)->buscarTodasLasCategorias(); 
+        $queryBuilder = $em->getRepository(Category::class)->buscarTodasLasCategorias();
+
+        if ($request->query->getAlnum('filter')) {
+            $queryBuilder->andwhere('categ.name LIKE :name')
+            ->setParameter('name', '%' . $request->query->getAlnum('filter') . '%');
+        }
 
         $pagination = $paginator->paginate(
-            $categories,
+            $queryBuilder,
             $request->query->getInt('page', 1),
-            5
+            $request->query->getInt('limit', 2)
         );
 
         return $this->render('category/index.html.twig', ['pagination' => $pagination]);
-
-        /*return $this->render('category/index.html.twig', [
-            'categories' => $categoryRepository->findAll(),
-        ]);*/
     }
 
     /**

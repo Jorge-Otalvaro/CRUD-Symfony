@@ -13,6 +13,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query\Parameter;
+
 /**
  * @Route("/")
  */
@@ -24,20 +27,20 @@ class ProductController extends AbstractController
     public function index(PaginatorInterface $paginator, Request $request, ProductRepository $productRepository): Response
     {
         $em = $this->getDoctrine()->getManager();
-        $products = $em->getRepository(Product::class)->buscarTodosLosProductos(); 
+        $queryBuilder = $em->getRepository(Product::class)->buscarTodosLosProductos();
+
+        if ($request->query->getAlnum('filter')) {
+            $queryBuilder->andwhere('prod.name LIKE :name')
+            ->setParameter('name', '%' . $request->query->getAlnum('filter') . '%');
+        }
 
         $pagination = $paginator->paginate(
-            $products,
+            $queryBuilder,
             $request->query->getInt('page', 1),
-            5
+            $request->query->getInt('limit', 2)
         );
 
         return $this->render('product/index.html.twig', ['pagination' => $pagination]);
-
-        /*
-        return $this->render('/index.html.twig', [
-            'products' => $productRepository->findAll(),
-        ]);*/
     }
 
     /**
@@ -90,6 +93,8 @@ class ProductController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $product->setUpdatedAt(new \DateTime());
+            $category = $product->getCategory();
+            $product->setCategory($category);
             $productRepository->add($product);
 
             $this->addFlash(

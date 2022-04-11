@@ -50,8 +50,6 @@ class CategoryRepository extends ServiceEntityRepository
      */
     public function buscarTodasLasCategorias()
     {
-        return $this->getEntityManager()->createQuery(
-            'SELECT categ.id, categ.name, categ.active, categ.createdAt, categ.updatedAt FROM  App:Category categ'
-        );
+        return $this->_em->getRepository('App:Category')->createQueryBuilder('categ')->orderBy('categ.id', 'ASC');
     }
 }

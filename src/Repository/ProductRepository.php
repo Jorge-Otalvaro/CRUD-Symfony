@@ -48,48 +48,11 @@ class ProductRepository extends ServiceEntityRepository
         }
     }
 
-    public function findAll()
-    {
-        return $this->findBy(array(), array('id' => 'ASC'));
-    }
-
     /**
      * Buscar todos las Categorias
      */
     public function buscarTodosLosProductos()
     {
-        $entityManager = $this->getEntityManager();
-
-        $query = $entityManager->createQuery(
-            'SELECT prod.id, prod.code, prod.name, prod.description, prod.brand, prod.price, prod.createdAt, prod.updatedAt
-            FROM App:Product prod
-            ORDER BY prod.id ASC'
-        );
-
-        return $query;
-    }
-
-    /**
-     * @return Product[]
-     */
-    public function findAllGreaterThanPrice($filter): array
-    {
-        $entityManager = $this->getEntityManager();
-
-        $query = $entityManager->createQuery(
-            'SELECT prod
-            FROM App:Product prod
-            WHERE 
-            prod.id like :id OR prod.name like :name OR
-            prod.code like :code OR prod.brand like :brand
-            ORDER BY prod.name ASC'
-        )->setParameter([
-            'id' => '%' . $filter . '%',
-            'code' => '%' . $filter . '%',
-            'name' => '%' . $filter . '%',
-            'brand' => '%' . $filter . '%'
-        ]);
-        
-        return $query->getResult();
+        return $this->_em->getRepository('App:Product')->createQueryBuilder('prod')->orderBy('prod.id', 'ASC');
     }
 }

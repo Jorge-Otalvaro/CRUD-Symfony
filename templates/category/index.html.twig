@@ -6,7 +6,7 @@
     <h1>Lista de categorías</h1>
 
     <div class="card-body" style="text-align: right;"> 
-        <form action="" method="get">
+        <form action="{{ path('app_category_index') }}" method="get">
             <input name="filter" type="text">
             <button type="submit" class="btn btn-info">Buscar</button>
         </form>
