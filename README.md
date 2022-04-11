@@ -1,20 +1,26 @@
-
 # Productos.com
 
-![Logo](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/th5xamgrr6se0x5ro4g6.png)
+![image](https://user-images.githubusercontent.com/16736512/162637845-40a40d84-116e-4277-88f0-80286d2ca1de.png)
 
+![image](https://user-images.githubusercontent.com/16736512/162637863-48a6b98e-8c35-4095-9df6-472d8e949c14.png)
+
+![image](https://user-images.githubusercontent.com/16736512/162637884-4d37f058-94dc-44c6-951a-af69897ed354.png)
+
+![image](https://user-images.githubusercontent.com/16736512/162637899-2d15318c-ec85-4ba5-8490-e40ee31545f7.png)
+
+![image](https://user-images.githubusercontent.com/16736512/162637871-82669b25-c6d5-4027-962f-dae7eb8b01d3.png)
 
 ## Características Funcionales Realizadas
 
-This project is used by the following companies:
+Desarrollado en Symfony
 
 - Lista de Productos
 - CRUD de Productos
 - Lista de Categorias
 - CRUD de Categorias
 - Detalle de producto, Categoria
-
-
+- Filtrado
+- Paginado
 
 ## Validaciones
 
@@ -28,4 +34,3 @@ This project is used by the following companies:
 ## Authors
 
 - [@JorgeOtalvaro](https://www.github.com/Jorge-Otalvaro)
-
